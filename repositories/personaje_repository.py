@@ -37,5 +37,26 @@ class PersonajeRepository:
             return Guerrero(fila[1], fila[3], fila[4], fila[5], "Guerrero")
         return None
 
-    def editar():
-        pass
+    def editar(self, personaje: Personaje) -> bool:
+        self.__conexion.execute("""
+        UPDATE personajes
+        SET nombre = ?, tipo = ?, nivel = ?, vida = ?, poder = ?
+        WHERE id = ?
+        """,(
+            personaje.nombre, personaje.tipo, personaje.nivel,
+            personaje.vida, personaje.poder, personaje.id
+        ))
+        self.__conexion.commit()
+        if self.__conexion.total_changes == 0:
+            return False
+        return True
+
+    def eliminar(self, id: int) -> bool:
+        self.__conexion.execute("""
+        DELETE FROM personajes
+        WHERE id = ?
+        """, (id,))
+        self.__conexion.commit()
+        if self.__conexion.total_changes == 0:
+            return False
+        return True
